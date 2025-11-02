@@ -146,4 +146,24 @@ anova(mod_old,mod_new)
 item_diff<-colMeans(SAPA,na.rm = TRUE)
 round(item_diff,3)
 ```
+```{r}
+total_score<-rowSums(SAPA,na.rm = TRUE)
+item_discr<-cor(SAPA,total_score,use = "pairwise.complete.obs")
+item_discr
+```
+```{r}
+idi(SAPA,SAPA$reason.4,perc_cut = .27)
+```
+
+```{r}
+iri(SAPA)
+```
+```{r}
+ivi(item=SAPA$reason.4,crit = SAPA$reason.17)
+```
+
+```{r}
+distractors<-distract(multiplechoice)
+head(distractors)
+```
 
