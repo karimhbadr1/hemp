@@ -8,6 +8,7 @@ editor: visual
 library(mirt)
 library(hemp)
 ```
+
 ```{r}
 onepl_mod<-"F=1-16
 CONSTRAIN=(1-16,a1)"
@@ -17,6 +18,7 @@ CONSTRAIN=(1-16,a1)"
 onepl_fit<-mirt(data=SAPA,model=onepl_mod,SE=TRUE)
 onepl_fit
 ```
+
 ```{r}
 summary(onepl_fit)
 ```
@@ -67,6 +69,7 @@ rasch_mod<-"F=1-16"
 rasch_fit<-mirt(data=SAPA,model=rasch_mod,itemtype="Rasch",SE=TRUE)
 rasch_fit
 ```
+
 ```{r}
 coef(rasch_fit,printSE=TRUE)
 ```
@@ -79,5 +82,56 @@ rasch_items
 
 ```{r}
 plot(rasch_fit,type="trace",which.items=c(1,2))
+```
+```{r}
+twwopl_mod<-"F=1-16"
+twopl_fit<-mirt(data=SAPA,model=twwopl_mod,itemtype="2PL",SE=TRUE)
+twopl_fit
+```
+
+```{r}
+twopl_params<-coef(twopl_fit,IRTpars=TRUE,simplify=TRUE)
+twopl_items<-twopl_params$items
+twopl_items
+```
+
+```{r}
+plot(twopl_fit,type="trace",which.items=c(12,14))
+```
+```{r}
+plot(twopl_fit,type="trace",which.items=c(5,16),
+     facet_items=FALSE,auto.key=list(points=FALSE),lines=TRUE,columns=2,par.settings=simpleTheme(lty=1:2))
+```
+
+```{r}
+threepl_mod<-"F=1-16"
+threepl_fit<-mirt(data=SAPA,model=threepl_mod,itemtype = "3PL",SE=TRUE)
+threepl_fit
+```
+
+```{r}
+threepl_params<-coef(threepl_fit,IRTpars=TRUE,simplify=TRUE)
+threepl_items<-threepl_params$items
+threepl_items
+```
+```{r}
+plot(threepl_fit,type="trace",which.items=c(1,4),
+     facet_items=FALSE,auto.key=list(points=FALSE,lines=TRUE,columns=2),
+     par.settings=simpleTheme(lty=1:2))
+```
+
+```{r}
+fourpl_mod<-"F=1-16"
+fourpl_fit<-mirt(data=SAPA,model=fourpl_mod,itemtype = "4PL",SE=TRUE)
+fourpl_fit
+```
+
+```{r}
+fourpl_params<-coef(fourpl_fit,IRTpars=TRUE,simplify=TRUE)
+fourpl_items<-fourpl_params$items
+fourpl_items
+```
+```{r}
+plot(fourpl_fit,type="trace",which.items=c(13,16))
 ```
 
