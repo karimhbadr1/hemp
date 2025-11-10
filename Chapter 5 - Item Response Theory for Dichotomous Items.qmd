@@ -135,3 +135,97 @@ fourpl_items
 plot(fourpl_fit,type="trace",which.items=c(13,16))
 ```
 
+```{r}
+latent_mle<-fscores(twopl_fit,method="ML",full.scores = TRUE,full.scores.SE = TRUE)
+latent_map<-fscores(twopl_fit,method="MAP",full.scores=TRUE,full.scores.SE = TRUE)
+latent_eap<-fscores(twopl_fit,method="EAP",full.scores = TRUE,full.scores.SE = TRUE)
+```
+
+```{r}
+head(latent_mle)
+```
+
+```{r}
+latent<-data.frame(MLE=latent_mle[,1],
+                   MAP=latent_map[,1],
+                   EAP=latent_eap[,1])
+head(latent)
+```
+
+```{r}
+latent[c(73,89,103,105),]
+```
+
+```{r}
+latent_est<-latent[is.finite(latent$MLE),]
+```
+
+```{r}
+apply(latent_est,2,summary)
+apply(latent_est,2,sd)
+```
+
+```{r}
+cor(latent_est)
+```
+```{r}
+pairs(latent_est)
+```
+```{r}
+rmsd(latent_est$MLE,latent_est$MAP)
+rmsd(latent_est$MLE,latent_est$EAP)
+rmsd(latent_est$MAP,latent_est$EAP)
+```
+
+```{r}
+rasch_itemfit<-itemfit(rasch_fit,
+                       fit_stats = c("S_X2","G2"),
+                       na.rm = TRUE)
+rasch_itemfit
+```
+
+```{r}
+itemfit(rasch_fit,fit_stats = c("Zh","infit"),na.rm = TRUE)
+```
+
+
+
+```{r}
+itemfit(rasch_fit,empirical.plot = 1)
+```
+
+
+```{r}
+SAPA_nomiss<-na.omit(SAPA)
+rasch_mod<-"F=1-16"
+rasch_fit<-mirt(data=SAPA_nomiss,model=rasch_mod,itemtype = "Rasch",SE=TRUE,verbose = FALSE)
+rasch_personfit<-personfit(rasch_fit)
+head(rasch_personfit)
+```
+
+```{r}
+hist(rasch_personfit$Zh,xlab="Zh Statistic")
+abline(v=-2,lwd=2,lty=2)
+```
+
+```{r}
+rasch_misfits<-subset(rasch_personfit,Zh< -2)
+rownames(rasch_misfits)
+```
+
+```{r}
+nrow(rasch_misfits)
+```
+
+```{r}
+anova(onepl_fit,twopl_fit)
+```
+
+```{r}
+anova(twopl_fit,threepl_fit)
+```
+
+```{r}
+anova(threepl_fit,fourpl_fit)
+```
+
