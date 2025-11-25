@@ -1,0 +1,41 @@
+---
+title: "Chapter 8 - Explanatory Item Response Theory"
+format: html
+editor: visual
+---
+
+```{r}
+library(hemp)
+```
+
+```{r}
+multiplechoice
+```
+
+```{r}
+mc_long<-reshape(multiplechoice,
+                 varying = 1:27,
+                 direction = "long",
+                 timevar = "item",
+                 idvar = "id",
+                 v.names = "response")
+mc_long
+```
+
+```{r}
+mc_long<-mc_long[order(mc_long$id,mc_long$item),]
+mc_long
+```
+
+```{r}
+library(lme4)
+```
+
+```{r}
+eirm
+```
+
+```{r}
+table(eirm$item,eirm$itemtype)
+```
+
