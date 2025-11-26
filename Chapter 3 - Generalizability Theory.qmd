@@ -84,3 +84,22 @@ dstudy_plot(twofacet,unit="students",facets=list(prompts=3:8,raters=1:5))
 ```{r}
 writing2
 ```
+
+```{r}
+nested_model<-lmer(scores~(1|students/raters)+(1|prompts)+(1|students:prompts),data=writing2)
+nested<-gstudy(nested_model)
+nested
+```
+
+```{r}
+dstudy(nested,n=c("raters"=2,"prompts"=5),unit="students")
+```
+
+```{r}
+twofacet_fixed<-gstudy(twofacet_mod,fixed = "prompts")
+twofacet_fixed
+```
+
+```{r}
+dstudy(twofacet_fixed,n=c("raters"=2,"prompts"=5),unit="students")
+```
