@@ -1,6 +1,6 @@
 Working through the book "Handbook of Educational Measurement and Psychometrics using R"
 
-* Chapter 1:
+* Chapter 1: Nov 27 2025
 * Chapter 2: Nov 2 2025
 * Chapter 3: Nov 26 2025
 * Chapter 4: Nov 4 2025
