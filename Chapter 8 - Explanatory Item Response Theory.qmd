@@ -39,3 +39,84 @@ eirm
 table(eirm$item,eirm$itemtype)
 ```
 
+```{r}
+control<-glmerControl(optimizer = "bobyqa",optCtrl = list(maxfun=10000))
+```
+
+```{r}
+rasch_mod<-glmer(response~-1+item+(1|person),family = binomial,data=eirm,control=control)
+rasch_mod
+```
+
+```{r}
+rasch_params<-data.frame(easiness=fixef(rasch_mod))
+rasch_params
+```
+
+```{r}
+rasch_ability<-coef(rasch_mod)$person[,1]
+head(rasch_ability)
+```
+
+```{r}
+difficulty<-rasch_params$easiness
+names(difficulty)<-1:10
+itemperson_map(difficulty,rasch_ability,n=50)
+```
+
+```{r}
+lltm_mod<-glmer(response~-1+itemtype+(1|person),family=binomial,data=eirm,control=control)
+lltm_mod
+```
+
+```{r}
+summary(lltm_mod)
+```
+
+```{r}
+lltme_mod<-glmer(response~-1+itemtype+(1|item)+(1|person),family = binomial,data=eirm,control=control)
+summary(lltme_mod)
+```
+
+```{r}
+anova(rasch_mod,lltm_mod)
+```
+
+```{r}
+anova(rasch_mod,lltme_mod)
+```
+
+```{r}
+lrrm_mod<-glmer(response~-1+item+gender+(1|person),family=binomial,data=eirm,control=control)
+summary(lrrm_mod)
+```
+
+```{r}
+lrrme_mod<-glmer(response~-1+item+gender+(gender|person),family = binomial,control=control,data=eirm)
+summary(lrrme_mod)
+```
+
+```{r}
+anova(rasch_mod,lrrm_mod)
+anova(lrrm_mod,lrrme_mod)
+```
+
+```{r}
+int_mod<-glmer(response~-1+itemtype*gender+(1|person)+(1|item),family=binomial,data=eirm,control)
+summary(int_mod)
+```
+
+```{r}
+dif_mod<-glmer(response~-1+item*gender+(1|person),family=binomial,data=eirm,control = control)
+summary(dif_mod)
+```
+
+```{r}
+dif10<-with(eirm,ifelse(gender=="M"&item=="10",1,0))
+dif10_mod<-glmer(response~-1+item+gender+dif10+(1|person),family = binomial,control = control,data=eirm)
+summary(dif10_mod)
+```
+
+```{r}
+anova(rasch_mod,dif10_mod)
+```
