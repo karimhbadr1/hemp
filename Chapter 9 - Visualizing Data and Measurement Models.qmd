@@ -1,0 +1,126 @@
+---
+title: "Chapter 9 - Visualizing Data and Measurement Models"
+format: html
+editor: visual
+---
+
+```{r}
+#install.packages("faoutlier")
+library(faoutlier)
+library(hemp)
+```
+
+```{r}
+cognitive<-interest[,c(4:9)]
+D2<-robustMD(cognitive)
+```
+
+```{r}
+plot(D2,ylab="D2")
+```
+
+```{r}
+D2$mah[which.max(D2$mah)]
+```
+
+```{r}
+cognitive[202,]
+apply(cognitive, 2, max)
+```
+
+```{r}
+cog_mod<-"
+verb=~vocab+reading+sentcomp
+math=~mathmtcs+geometry+analyrea
+"
+
+gd<-gCD(interest,cog_mod)
+plot(gd,ylab="Generalized Cook's D")
+```
+
+```{r}
+gd$gCD[which.max(gd$gCD)]
+```
+
+```{r}
+cog_resid<-obs.resid(interest,cog_mod)
+cogn_std<-data.frame(cog_resid$std_res)
+```
+
+```{r}
+cogn_std_1<-reshape(cogn_std,
+                    direction = "long",
+                    varying = 1:6,
+                    v.names = "std_res",
+                    timevar = "var",
+                    times=names(cogn_std))
+```
+
+```{r}
+qqmath(~std_res|var,cogn_std_1,
+       xlab="Normal theoretical quantiles",
+       ylab = "Standardized Residuals",
+       panel=function(x,...) {
+         panel.qqmathline(x,...)
+         panel.qqmath(x,...)
+       },
+       auto.key = T)
+```
+
+```{r}
+cog_fit<-cfa(cog_mod,interest)
+cog_pred<-data.frame(predict(cog_fit))
+```
+
+```{r}
+cognitive_1<-reshape(cognitive,
+                     direction="long",
+                     varying=1:6,
+                     v.names="obs_score",
+                     timevar="var",
+                     times=names(cognitive))
+```
+
+```{r}
+cognitive_1$pred_fact<-c(rep(cog_pred$verb,3),
+                         rep(cog_pred$math,3))
+```
+
+```{r}
+xyplot(obs_score~pred_fact|var,cognitive_1,
+       xlab="Factor Score",
+       ylab="Manifest Variable",
+       auto.key = T)
+```
+
+```{r}
+plot(cog_resid,restype="std_res")
+```
+
+```{r}
+outliers<-which(abs(cogn_std_1$std_res)>3)
+cogn_std_1[outliers,]
+```
+
+```{r}
+#install.packages("semPlot")
+library(semPlot)
+```
+
+```{r}
+semPaths(cog_fit,what="std",residuals=F,rotation=4,color="black",edge.color = "black",edge.label.cex = 1)
+```
+
+```{r}
+configural<-cfa(cog_mod,interest,group="gender")
+semPaths(configural,what="est",edge.label.cex = 1,panelGroups = T,ask = F,fade=F,title=F,color="black",edge.color = "black")
+```
+
+```{r}
+fadiag_demo()
+```
+
+```{r}
+threepl_demo()
+```
+
