@@ -9,6 +9,6 @@ Working through the book "Handbook of Educational Measurement and Psychometrics 
 * Chapter 7: Nov 25 2025
 * Chapter 8: Nov 28 2025
 * Chapter 9: Nov 28 2025
-* Chapter 10
+* Chapter 10: Nov 30 2025
 * Chapter 11
 * Chapter 12
