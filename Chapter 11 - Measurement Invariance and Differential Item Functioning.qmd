@@ -1,0 +1,79 @@
+---
+title: "Chapter 11 - Measurement Invariance and Differential Item Functioning"
+format: html
+editor: visual
+---
+
+```{r}
+library(lavaan)
+library(hemp)
+```
+
+```{r}
+interest$gender_f<-ifelse(interest$gender==1,"male","female")
+```
+
+```{r}
+cog_mod<-'verb=~vocab+reading+sentcomp
+math=~mathmtcs+geometry+analyrea'
+
+cog_fit<-cfa(cog_mod,interest)
+```
+
+```{r}
+fitMeasures(cog_fit,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+configural<-cfa(cog_mod,interest,group="gender_f")
+fitMeasures(configural,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+weak_invariance<-cfa(cog_mod,interest,group="gender_f",
+                     group.equal="loadings")
+fitMeasures(weak_invariance,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+anova(weak_invariance,configural)
+```
+
+```{r}
+strong_invariance<-cfa(cog_mod,interest,group="gender_f",
+                     group.equal=c("loadings","intercepts"))
+fitMeasures(strong_invariance,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+anova(strong_invariance,weak_invariance)
+```
+
+```{r}
+strict_invariance<-cfa(cog_mod,interest,group="gender_f",
+                     group.equal=c("loadings","intercepts","residuals"))
+fitMeasures(strict_invariance,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+anova(strict_invariance,strong_invariance)
+```
+```{r}
+summary(strict_invariance)
+```
+
+```{r}
+lavTestScore(strong_invariance)
+```
+
+```{r}
+parTable(strong_invariance)
+```
+
+```{r}
+strong_invariance1<-cfa(cog_mod,interest,group="gender_f",
+                     group.equal=c("loadings","intercepts"),
+                     group.partial="mathmtcs~1")
+fitMeasures(strong_invariance1,fit.measures = c("cfi","tli","rmsea"))
+```
+
