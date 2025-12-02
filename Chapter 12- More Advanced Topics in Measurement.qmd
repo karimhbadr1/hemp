@@ -1,0 +1,18 @@
+---
+title: "Chapter 12- More Advanced Topics in Measurement"
+format: html
+editor: visual
+---
+
+```{r}
+install.packages("ctv")
+```
+
+```{r}
+library(ctv)
+```
+
+```{r}
+install.views("Psychometrics")
+```
+

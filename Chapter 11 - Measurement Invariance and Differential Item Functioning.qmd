@@ -58,6 +58,7 @@ fitMeasures(strict_invariance,fit.measures = c("cfi","tli","rmsea"))
 ```{r}
 anova(strict_invariance,strong_invariance)
 ```
+
 ```{r}
 summary(strict_invariance)
 ```
@@ -75,5 +76,94 @@ strong_invariance1<-cfa(cog_mod,interest,group="gender_f",
                      group.equal=c("loadings","intercepts"),
                      group.partial="mathmtcs~1")
 fitMeasures(strong_invariance1,fit.measures = c("cfi","tli","rmsea"))
+```
+
+```{r}
+VerbAgg<-VerbAggWide[,c(3,4:27)]
+VerbAgg[,2:25]<-apply(VerbAgg[,2:25],2,function(x) ifelse(x==0,0,1))
+VerbAgg
+```
+
+```{r}
+library(difR)
+results_MH<-difMH(Data=VerbAgg,group="Gender",focal.name="F")
+results_MH
+```
+```{r}
+plot(results_MH)
+```
+
+```{r}
+results_MH1<-difMH(Data=VerbAgg,group="Gender",focal.name = "F",purify = T,p.adjust.method = "BH")
+results_MH1
+```
+```{r}
+plot(results_MH1)
+```
+```{r}
+logistic_fit<-difLogistic(Data=VerbAgg,group="Gender",focal.name = "F",type="both")
+logistic_fit
+```
+
+```{r}
+difLogistic(Data=VerbAgg,group="Gender",focal.name = "F",type="udif")
+difLogistic(Data=VerbAgg,group="Gender",focal.name = "F",type="nudif")
+```
+```{r}
+plot(logistic_fit)
+```
+
+```{r}
+plot(logistic_fit,item=6,plot="itemCurve")
+```
+
+```{r}
+library(mirt)
+twopl_mod<-"F=1-24"
+twopl_fit<-multipleGroup(data=VerbAgg[,2:25],
+                         model=twopl_mod,
+                         SE=TRUE,
+                         group = VerbAgg$Gender)
+twopl_fit
+```
+```{r}
+summary(twopl_fit)
+```
+
+```{r}
+results_irtlr<-DIF(MGmodel = twopl_fit,
+                   which.par = c("a1","d"),
+                   scheme = "add")
+results_irtlr
+```
+
+```{r}
+results_irtlr$Item<-rownames(results_irtlr)
+results_irtlr
+```
+
+```{r}
+DIFitems<-which(colnames(VerbAgg[,2:25]) %in% results_irtlr[results_irtlr$p<0.05,]$Item)
+DIFitems
+```
+
+```{r}
+results_irtlr1<-DIF(MGmodel = twopl_fit,
+                    which.par = "d",
+                    scheme = "add",
+                    items2test = DIFitems)
+results_irtlr1
+```
+```{r}
+results_irtlr2<-DIF(MGmodel = twopl_fit,
+                    which.par = "a1",
+                    scheme = "add",
+                    items2test = DIFitems)
+results_irtlr2
+```
+```{r}
+plot(twopl_fit,type="trace",which.items=c(14,16),
+     par.settings=simpleTheme(lty=1:2,lwd=2),
+     auto.key=list(points=FALSE,lines=TRUE,columns=2))
 ```
 
